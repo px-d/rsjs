@@ -16,7 +16,10 @@ export interface BaseResult<T, E> {
 
   unwrap(): T;
   unwrapErr(): E;
-  unwrapOr<U extends T>(fallback: U): U;
+  unwrapOr<U extends T>(fallback: U): T;
+  unwrapToObject<U extends T>():
+    | { error?: E; value: U }
+    | { error: E; value: undefined };
 
   /**
    * Returns `other` if the result is Ok,
@@ -77,8 +80,14 @@ export class Ok<T, E> implements BaseResult<T, E> {
     throw new Error("Cannot unwrapErr an Ok value");
   }
 
-  unwrapOr<U extends T>(_fallback: U): U {
+  unwrapOr<U extends T>(_fallback: U): T {
     return this.value as U;
+  }
+
+  unwrapToObject<U extends T>():
+    | { error?: E | undefined; value: U }
+    | { error: E; value: undefined } {
+    return { value: this.value as U };
   }
 
   and<T2>(other: Result<T2, E>): Result<T2, E> {
@@ -142,6 +151,12 @@ export class Err<T, E> implements BaseResult<T, E> {
 
   unwrapOr<U extends T>(fallback: U): U {
     return fallback;
+  }
+
+  unwrapToObject<U extends T>():
+    | { error?: E | undefined; value: U }
+    | { error: E; value: undefined } {
+    return { error: this.value, value: undefined as U };
   }
 
   and<T2>(_other: Result<T2, E>): Result<T2, E> {

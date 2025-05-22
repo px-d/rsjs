@@ -1,4 +1,5 @@
 import { ok, Result, err } from "../src/result";
+import { describe, expect, it } from "bun:test";
 
 describe("Ok", () => {
   it("isOk", () => {
@@ -58,6 +59,11 @@ describe("Ok", () => {
   it("unwrapErr", () => {
     const x: Result<number, string> = ok(2);
     expect(() => x.unwrapErr()).toThrow("Cannot unwrapErr an Ok value");
+  });
+
+  it("unwrapToObject", () => {
+    const x = ok(20);
+    expect(x.unwrapToObject()).toEqual({ value: 20 });
   });
 
   it("and", () => {
@@ -143,6 +149,11 @@ describe("Err", () => {
   it("unwrapErr", () => {
     const x: Result<number, string> = err("error");
     expect(x.unwrapErr()).toEqual("error");
+  });
+
+  it("unwrapToObject", () => {
+    const x = err("error");
+    expect(x.unwrapToObject()).toEqual({ error: "error", value: undefined });
   });
 
   it("and", () => {
