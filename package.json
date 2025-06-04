@@ -16,7 +16,7 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "build": "tsup src/result.ts --format cjs,esm --dts"
+    "build": "tsup src/index.ts --format cjs,esm --dts"
   },
   "author": "",
   "license": "ISC",
